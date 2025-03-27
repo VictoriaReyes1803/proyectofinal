@@ -257,12 +257,6 @@ async function ejecutarPractica() {
             CONSTRAINT fk_autor FOREIGN KEY (autor_license) REFERENCES autor(license) ON DELETE CASCADE ON UPDATE CASCADE
         );
 
-        CREATE TABLE IF NOT EXISTS old_books (
-            ISBN VARCHAR(16), 
-            year SMALLINT, 
-            pages SMALLINT
-        );
-
         CREATE USER IF NOT EXISTS 'usuarioA'@'localhost' IDENTIFIED BY 'tucontrasena';
         CREATE USER IF NOT EXISTS 'usuarioB'@'localhost' IDENTIFIED BY 'tucontrasena';
 

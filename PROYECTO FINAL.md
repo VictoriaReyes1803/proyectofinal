@@ -16,7 +16,7 @@ CREATE TABLE Autor (id INT, license VARCHAR(12) NOT NULL, name TINYTEXT NOT NULL
   - El tiempo que toma crear 100,000 Libros en la Base de Datos usando datos aleatorios en CSV
   - El tiempo que toma insertar el CSV
   - El tiempo que toma insertar masivamente, estresando la base de datos con 3,500 Libros
-  
+
   - El tiempo que toma generar 100 archivos CSV, donde cada archivo incluye 1000 Libros
   - El tiempo que toma insertar los 100 archivos a MySQL
   - El tiempo que toma obtener en 1 solo query: El mayor número de paginas, menor número de páginas, el promedio de número de páginas, el año más cercano a la actualidad, el año más antigüo, y el número total de libros.
@@ -27,7 +27,9 @@ CREATE TABLE Autor (id INT, license VARCHAR(12) NOT NULL, name TINYTEXT NOT NULL
 
   - El tiempo que toma generar 150,000 Autores (Decidan de qué forma generarlos) e insertarlos
   - El tiempo que toma exportar ambas tablas a CSV
-  - El tiempo que toma respaldar ambas tablas a MongoDB, eliminarlas de MySQL, exportar el respaldo de MongoDB y restaurarlo en MySQL.
+
+  - El tiempo que toma respaldar ambas tablas a MongoDB, 
+  eliminarlas de MySQL, exportar el respaldo de MongoDB y restaurarlo en MySQL.
   - El tiempo que toma hacer el dump de toda la base de datos de MySQL ("Snapshot")
   - El tiempo que toma importar de nuevo todo el "snapshot" de la base de datos
 

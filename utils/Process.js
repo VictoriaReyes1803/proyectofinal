@@ -1,5 +1,5 @@
 const { spawn } = require('node:child_process');
-process.env.path += ";C:\\MongoDB\\bin";
+process.env.path += ";C:\\Program Files\\MongoDB\\Server\\8.0\\bin";
 process.env.path += ";C:\\Users\\reyed\\Downloads\\mysql-8.0.40-winx64\\mysql-8.0.40-winx64\\bin";
 
 class Process {

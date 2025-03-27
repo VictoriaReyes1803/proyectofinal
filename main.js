@@ -283,142 +283,142 @@ async function ejecutarPractica() {
   console.log(
     "1)Crear 100,000 Libros en la Base de Datos usando datos aleatorios en CSV "
   );
-  const start1 = Date.now();
-  const { csv: autoresData0, autores } = generate_autores(5000,1, new Set(),true);
-  const librosData0 = generate_libros(100000, autores, true);
-    FileStream.writeFileSync("C:/tmp/autores.csv", autoresData0);
-    FileStream.writeFileSync("C:/tmp/libros.csv", librosData0);
-    const end1 = Date.now();
-    metricas.mysql.libros1 = end1 - start1;
-    console.log("Autores y Libros(100,000) creados en MySQL en", metricas.mysql.libros1, "ms");
+//   const start1 = Date.now();
+//   const { csv: autoresData0, autores } = generate_autores(5000,1, new Set(),true);
+//   const librosData0 = generate_libros(100000, autores, true);
+//     FileStream.writeFileSync("C:/tmp/autores.csv", autoresData0);
+//     FileStream.writeFileSync("C:/tmp/libros.csv", librosData0);
+//     const end1 = Date.now();
+//     metricas.mysql.libros1 = end1 - start1;
+//     console.log("Autores y Libros(100,000) creados en MySQL en", metricas.mysql.libros1, "ms");
 
     
-    console.log("2) insertar el CSV");
-    const loadata = new Process("mysql", { shell: true });
-    loadata.ProcessArguments.push("-uroot --port=3306 --password=tucontrasena");
-    const start2 = Date.now();
-    loadata.Execute();
-    loadata.Write("USE Biblioteca;");
-    loadata.Write(`
+//     console.log("2) insertar el CSV");
+//     const loadata = new Process("mysql", { shell: true });
+//     loadata.ProcessArguments.push("-uroot --port=3306 --password=tucontrasena");
+//     const start2 = Date.now();
+//     loadata.Execute();
+//     loadata.Write("USE Biblioteca;");
+//     loadata.Write(`
     
-    LOAD DATA INFILE 'C:/tmp/autores.csv'
-    INTO TABLE autor
-    FIELDS TERMINATED BY ','
-    LINES TERMINATED BY '\\n';
+//     LOAD DATA INFILE 'C:/tmp/autores.csv'
+//     INTO TABLE autor
+//     FIELDS TERMINATED BY ','
+//     LINES TERMINATED BY '\\n';
 
-    LOAD DATA INFILE 'C:/tmp/libros.csv'
-    INTO TABLE libro
-    FIELDS TERMINATED BY ','
-    LINES TERMINATED BY '\\n';
-    `);
+//     LOAD DATA INFILE 'C:/tmp/libros.csv'
+//     INTO TABLE libro
+//     FIELDS TERMINATED BY ','
+//     LINES TERMINATED BY '\\n';
+//     `);
     
-    loadata.End();
-    const end2 = Date.now();
-     await loadata.Finish();
+//     loadata.End();
+//     const end2 = Date.now();
+//      await loadata.Finish();
    
     
-    metricas.mysql.csv1 = end2 - start2;
-    console.log("Autores y Libros insertados en csv", metricas.mysql.csv1, "ms");
+//     metricas.mysql.csv1 = end2 - start2;
+//     console.log("Autores y Libros insertados en csv", metricas.mysql.csv1, "ms");
 
 
-  console.log("3) insertar masivamente, estresando la base de datos con 3,500 Libros");
-  const insert = new Process("mysql", { shell: true });
-    insert.ProcessArguments.push("-uroot --port=3306 --password=tucontrasena");
-    insert.Execute();
-    insert.Write("USE Biblioteca;");
+//   console.log("3) insertar masivamente, estresando la base de datos con 3,500 Libros");
+//   const insert = new Process("mysql", { shell: true });
+//     insert.ProcessArguments.push("-uroot --port=3306 --password=tucontrasena");
+//     insert.Execute();
+//     insert.Write("USE Biblioteca;");
 
-    const start3 = Date.now();
-    const { data :autoresData2  , autores: newAutores } = generate_autores(3500, 5001, autores, false);
-    const librosData2 = generate_libros(3500, newAutores,false);
-    // console.log("Autores", autoresData2);
-    // console.log("Libros", librosData2);
-    // console.log("Autores", newAutores);
+//     const start3 = Date.now();
+//     const { data :autoresData2  , autores: newAutores } = generate_autores(3500, 5001, autores, false);
+//     const librosData2 = generate_libros(3500, newAutores,false);
+//     // console.log("Autores", autoresData2);
+//     // console.log("Libros", librosData2);
+//     // console.log("Autores", newAutores);
 
-     for (let i = 0; i < 3500; i++) {
-    insert.Write(`
-    INSERT INTO autor (license, name, lastname, secondLastName, year)
-    VALUES ('${autoresData2[i].license}', '${autoresData2[i].name}', '${autoresData2[i].lastname}','${autoresData2[i].secondLastName}', ${autoresData2[i].year});`);}
+//      for (let i = 0; i < 3500; i++) {
+//     insert.Write(`
+//     INSERT INTO autor (license, name, lastname, secondLastName, year)
+//     VALUES ('${autoresData2[i].license}', '${autoresData2[i].name}', '${autoresData2[i].lastname}','${autoresData2[i].secondLastName}', ${autoresData2[i].year});`);}
 
-    for (let i = 0; i < 3500; i++) {
-        insert.Write(`
-        INSERT INTO libro (ISBN, title, autor_license, editorial, pages, year, genre, language, format, sinopsis, content)
-        VALUES ('${librosData2[i].isbn}', '${librosData2[i].title}', '${librosData2[i].autor_license}', '${librosData2[i].editorial}', ${librosData2[i].pages}, ${librosData2[i].year}, '${librosData2[i].genre}', '${librosData2[i].language}', '${librosData2[i].format}', '${librosData2[i].sinopsis}', '${librosData2[i].content}');
-        `); 
-        }
+//     for (let i = 0; i < 3500; i++) {
+//         insert.Write(`
+//         INSERT INTO libro (ISBN, title, autor_license, editorial, pages, year, genre, language, format, sinopsis, content)
+//         VALUES ('${librosData2[i].isbn}', '${librosData2[i].title}', '${librosData2[i].autor_license}', '${librosData2[i].editorial}', ${librosData2[i].pages}, ${librosData2[i].year}, '${librosData2[i].genre}', '${librosData2[i].language}', '${librosData2[i].format}', '${librosData2[i].sinopsis}', '${librosData2[i].content}');
+//         `); 
+//         }
    
-    insert.End();
-    const end3 = Date.now();
-    await insert.Finish();
-    metricas.mysql.libros2 = end3 - start3;
-    console.log("Autores y Libros(3,500) creados e insertados en MySQL en", metricas.mysql.libros2, "ms");
+//     insert.End();
+//     const end3 = Date.now();
+//     await insert.Finish();
+//     metricas.mysql.libros2 = end3 - start3;
+//     console.log("Autores y Libros(3,500) creados e insertados en MySQL en", metricas.mysql.libros2, "ms");
   
-  console.log("4) generar 100 archivos CSV, donde cada archivo incluye 1000 Libros");
-  const start4 = Date.now();
-  for (let i = 0; i < 100; i++) {
-  const { csv: autoresData3, autores : newAutores2 } = generate_autores(1000,1, new Set(),true);
-  const librosData3 = generate_libros(1000, newAutores2, true);
-    FileStream.writeFileSync(`C:/tmp/autores${i+1}.csv`, autoresData3);
-    FileStream.writeFileSync(`C:/tmp/libros${i+1}.csv`, librosData3);
-  }
-    const end4 = Date.now();
-    metricas.mysql.libros3 = end4 - start4;
-    console.log("100 archivos creados de Autores y Libros(1000) creados en MySQL en", metricas.mysql.libros3, "ms");
+//   console.log("4) generar 100 archivos CSV, donde cada archivo incluye 1000 Libros");
+//   const start4 = Date.now();
+//   for (let i = 0; i < 100; i++) {
+//   const { csv: autoresData3, autores : newAutores2 } = generate_autores(1000,1, new Set(),true);
+//   const librosData3 = generate_libros(1000, newAutores2, true);
+//     FileStream.writeFileSync(`C:/tmp/autores${i+1}.csv`, autoresData3);
+//     FileStream.writeFileSync(`C:/tmp/libros${i+1}.csv`, librosData3);
+//   }
+//     const end4 = Date.now();
+//     metricas.mysql.libros3 = end4 - start4;
+//     console.log("100 archivos creados de Autores y Libros(1000) creados en MySQL en", metricas.mysql.libros3, "ms");
 
     
     
-    console.log("5) insertar los 100 archivos a MySQL");
-    const loadata2 = new Process("mysql", { shell: true });
-    loadata2.ProcessArguments.push("-uroot --port=3306 --password=tucontrasena");
-    const start5 = Date.now();
-    loadata2.Execute();
-    loadata2.Write("USE Biblioteca;");
-    for (let i = 0; i < 100; i++) {
-    loadata2.Write(`
+//     console.log("5) insertar los 100 archivos a MySQL");
+//     const loadata2 = new Process("mysql", { shell: true });
+//     loadata2.ProcessArguments.push("-uroot --port=3306 --password=tucontrasena");
+//     const start5 = Date.now();
+//     loadata2.Execute();
+//     loadata2.Write("USE Biblioteca;");
+//     for (let i = 0; i < 100; i++) {
+//     loadata2.Write(`
     
-    LOAD DATA INFILE 'C:/tmp/autores${i+1}.csv'
-    INTO TABLE autor
-    FIELDS TERMINATED BY ','
-    LINES TERMINATED BY '\\n';
+//     LOAD DATA INFILE 'C:/tmp/autores${i+1}.csv'
+//     INTO TABLE autor
+//     FIELDS TERMINATED BY ','
+//     LINES TERMINATED BY '\\n';
 
-    LOAD DATA INFILE 'C:/tmp/libros${i+1}.csv'
-    INTO TABLE libro
-    FIELDS TERMINATED BY ','
-    LINES TERMINATED BY '\\n';
-    `);
-    }
+//     LOAD DATA INFILE 'C:/tmp/libros${i+1}.csv'
+//     INTO TABLE libro
+//     FIELDS TERMINATED BY ','
+//     LINES TERMINATED BY '\\n';
+//     `);
+//     }
    
-    loadata2.End();
-    const end5 = Date.now();
-     await loadata2.Finish();
+//     loadata2.End();
+//     const end5 = Date.now();
+//      await loadata2.Finish();
    
     
-    metricas.mysql.csv2 = end5 - start5;
-    console.log("100 archivos de Autores y Libros insertados en csv", metricas.mysql.csv2, "ms");
+//     metricas.mysql.csv2 = end5 - start5;
+//     console.log("100 archivos de Autores y Libros insertados en csv", metricas.mysql.csv2, "ms");
 
 
 
-  console.log("6)obtener en 1 solo query: El mayor número de paginas, menor número de páginas, el promedio de número de páginas, el año más cercano a la actualidad, el año más antigüo, y el número total de libros.");
-  const script = new Process("mysql", { shell: true });
-    script.ProcessArguments.push("-uroot --port=3306 --password=tucontrasena");
-    const start6 = Date.now();
-    script.Execute();
-    script.Write("USE Biblioteca;");
-    script.Write(`
-    SELECT MAX(pages) AS 'Mayor número de páginas', 
-    MIN(pages) AS 'Menor número de páginas', 
-    AVG(pages) AS 'Promedio de páginas',
-    MAX(year) AS 'Año más cercano a la actualidad', 
-    MIN(year) AS 'Año más antigüo',
-    COUNT(*) AS 'Número total de libros'
-    FROM libro;
-    `);
-    // script.process.stdout.on("data", (data) => console.log("STDOUT:", data.toString()));
-    // script.process.stderr.on("data", (data) => console.error("STDERR:", data.toString()));
-    script.End();
-    const end6 = Date.now();
-    await script.Finish();
-    metricas.mysql.script = end6 - start6;
-    console.log("Script ejecutado en MySQL en", metricas.mysql.script, "ms");
+//   console.log("6)obtener en 1 solo query: El mayor número de paginas, menor número de páginas, el promedio de número de páginas, el año más cercano a la actualidad, el año más antigüo, y el número total de libros.");
+//   const script = new Process("mysql", { shell: true });
+//     script.ProcessArguments.push("-uroot --port=3306 --password=tucontrasena");
+//     const start6 = Date.now();
+//     script.Execute();
+//     script.Write("USE Biblioteca;");
+//     script.Write(`
+//     SELECT MAX(pages) AS 'Mayor número de páginas', 
+//     MIN(pages) AS 'Menor número de páginas', 
+//     AVG(pages) AS 'Promedio de páginas',
+//     MAX(year) AS 'Año más cercano a la actualidad', 
+//     MIN(year) AS 'Año más antigüo',
+//     COUNT(*) AS 'Número total de libros'
+//     FROM libro;
+//     `);
+//     // script.process.stdout.on("data", (data) => console.log("STDOUT:", data.toString()));
+//     // script.process.stderr.on("data", (data) => console.error("STDERR:", data.toString()));
+//     script.End();
+//     const end6 = Date.now();
+//     await script.Finish();
+//     metricas.mysql.script = end6 - start6;
+//     console.log("Script ejecutado en MySQL en", metricas.mysql.script, "ms");
 
 
 
@@ -449,6 +449,7 @@ async function ejecutarPractica() {
     const startGeneracionAutores = Date.now();
     const autoresData = generate_autores_data(150000);
     const archivoAutores = "C:/tmp/autores_data.csv";
+
     FileStream.writeFileSync(archivoAutores, autoresData);
     const endGeneracionAutores = Date.now();
     metricas.mysql.generarAutores = endGeneracionAutores - startGeneracionAutores;
@@ -478,8 +479,8 @@ async function ejecutarPractica() {
     console.log("3) Exportando tablas a CSV");
     const exportarCSV = new Process("mysql", { shell: true });
     exportarCSV.ProcessArguments.push("-uroot");
-    exportarCSV.ProcessArguments.push("--port=6033");
-    exportarCSV.ProcessArguments.push("--password=utt");
+    exportarCSV.ProcessArguments.push("--port=3306");
+    exportarCSV.ProcessArguments.push("--password=tucontrasena");
     exportarCSV.Execute();
     exportarCSV.Write("USE Biblioteca;");
     exportarCSV.Write(
@@ -488,6 +489,7 @@ async function ejecutarPractica() {
     exportarCSV.Write(
       "SELECT * FROM libro INTO OUTFILE 'C:/tmp/libros_export.csv' FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\n';"
     );
+
     exportarCSV.End();
     await exportarCSV.Finish();
     metricas.mysql.exportarCSV = exportarCSV.EndTime - exportarCSV.StartTime;
@@ -530,8 +532,8 @@ async function ejecutarPractica() {
 
     const eliminarMySQL = new Process("mysql", { shell: true });
     eliminarMySQL.ProcessArguments.push("-uroot");
-    eliminarMySQL.ProcessArguments.push("--port=6033");
-    eliminarMySQL.ProcessArguments.push("--password=utt");
+    eliminarMySQL.ProcessArguments.push("--port=3306");
+    eliminarMySQL.ProcessArguments.push("--password=tucontrasena");
     eliminarMySQL.Execute();
     eliminarMySQL.Write("USE Biblioteca;");
     eliminarMySQL.Write("DELETE FROM autor;");
@@ -586,8 +588,8 @@ async function ejecutarPractica() {
 
     const restaurarMySQL = new Process("mysql", { shell: true });
     restaurarMySQL.ProcessArguments.push("-uroot");
-    restaurarMySQL.ProcessArguments.push("--port=6033");
-    restaurarMySQL.ProcessArguments.push("--password=utt");
+    restaurarMySQL.ProcessArguments.push("--port=3306");
+    restaurarMySQL.ProcessArguments.push("--password=tucontrasena");
     restaurarMySQL.Execute();
     restaurarMySQL.Write("USE Biblioteca;");
     restaurarMySQL.Write(`LOAD DATA INFILE 'C:/tmp/autores_restore.csv' INTO TABLE autor
@@ -600,6 +602,10 @@ async function ejecutarPractica() {
                       FIELDS TERMINATED BY ','
                       LINES TERMINATED BY '\n'
                       IGNORE 1 ROWS;`);
+                      
+                    //   restaurarMySQL.process.stdout.on("data", (data) => console.log("STDOUT:", data.toString()));
+                    //   restaurarMySQL.process.stderr.on("data", (data) => console.error("STDERR:", data.toString()));
+    
     restaurarMySQL.End();
     await restaurarMySQL.Finish();
 
@@ -612,8 +618,8 @@ async function ejecutarPractica() {
     console.log("6) Realizando dump de MySQL");
     const mysqldump = new Process("mysqldump");
     mysqldump.ProcessArguments.push("-uroot");
-    mysqldump.ProcessArguments.push("--port=6033");
-    mysqldump.ProcessArguments.push("--password=utt");
+    mysqldump.ProcessArguments.push("--port=3306");
+    mysqldump.ProcessArguments.push("--password=tucontrasena");
     mysqldump.ProcessArguments.push("Biblioteca");
     mysqldump.ProcessArguments.push(
       "--result-file=C:/tmp/biblioteca_snapshot.sql"
@@ -626,8 +632,8 @@ async function ejecutarPractica() {
     
     const setupDb = new Process("mysql", { shell: true });
    setupDb.ProcessArguments.push("-uroot");
-   setupDb.ProcessArguments.push("--port=6033");
-   setupDb.ProcessArguments.push("--password=utt");
+   setupDb.ProcessArguments.push("--port=3306");
+   setupDb.ProcessArguments.push("--password=tucontrasena");
    setupDb.Execute();
    setupDb.Write("DROP DATABASE IF EXISTS Biblioteca;");
    setupDb.Write("CREATE DATABASE Biblioteca;");
@@ -635,8 +641,8 @@ async function ejecutarPractica() {
    await setupDb.Finish();
    const importarDump = new Process("mysql", { shell: true });
    importarDump.ProcessArguments.push("-uroot");
-   importarDump.ProcessArguments.push("--port=6033");
-   importarDump.ProcessArguments.push("--password=utt");
+   importarDump.ProcessArguments.push("--port=3306");
+   importarDump.ProcessArguments.push("--password=tucontrasena");
    importarDump.ProcessArguments.push("Biblioteca");
    importarDump.ProcessArguments.push("<");
    importarDump.ProcessArguments.push("C:/tmp/biblioteca_snapshot.sql");
@@ -679,8 +685,8 @@ async function ejecutarPractica() {
     console.log("10) Importando CSV a nueva tabla MySQL");
     const importarOldBooks = new Process("mysql", { shell: true });
     importarOldBooks.ProcessArguments.push("-uroot");
-    importarOldBooks.ProcessArguments.push("--port=6033");
-    importarOldBooks.ProcessArguments.push("--password=utt");
+    importarOldBooks.ProcessArguments.push("--port=3306");
+    importarOldBooks.ProcessArguments.push("--password=tucontrasena");
     importarOldBooks.Execute();
     importarOldBooks.Write("USE Biblioteca;");
     importarOldBooks.Write("DROP TABLE IF EXISTS old_books;");
@@ -691,14 +697,17 @@ async function ejecutarPractica() {
                       FIELDS TERMINATED BY ','
                       LINES TERMINATED BY '\n'
                       IGNORE 1 ROWS;`);
+                      importarOldBooks.process.stdout.on("data", (data) => console.log("STDOUT:", data.toString()));
+                      importarOldBooks.process.stderr.on("data", (data) => console.error("STDERR:", data.toString()));
+    
     importarOldBooks.End();
     await importarOldBooks.Finish();
 
     console.log("11) Midiendo tiempo de fallo de usuario A para insertar Autor");
     const usuarioAFallido = new Process("mysql", { shell: true });
     usuarioAFallido.ProcessArguments.push("-uusuarioTest");
-    usuarioAFallido.ProcessArguments.push("--port=6033");
-    usuarioAFallido.ProcessArguments.push("--password=password");
+    usuarioAFallido.ProcessArguments.push("--port=3306");
+    usuarioAFallido.ProcessArguments.push("--password=tucontrasena");
     const startFalloA = Date.now();
     usuarioAFallido.Execute();
     usuarioAFallido.Write("USE Biblioteca;");
@@ -719,8 +728,8 @@ async function ejecutarPractica() {
     console.log("12) Midiendo tiempo de fallo de usuario B para insertar Libro");
     const usuarioBFallido = new Process("mysql", { shell: true });
     usuarioBFallido.ProcessArguments.push("-uusuarioTest2");
-    usuarioBFallido.ProcessArguments.push("--port=6033");
-    usuarioBFallido.ProcessArguments.push("--password=password");
+    usuarioBFallido.ProcessArguments.push("--port=3306");
+    usuarioBFallido.ProcessArguments.push("--password=tucontrasena");
     const startFalloB = Date.now();
     usuarioBFallido.Execute();
     usuarioBFallido.Write("USE Biblioteca;");

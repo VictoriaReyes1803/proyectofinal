@@ -8,7 +8,7 @@
     </head>
     <body">
         <h1>Resultados de Rendimiento</h1>
-        <div style="width: 80%; margin: auto;">
+        <div style="width: 100%; height:120%; margin: auto;">
             <canvas id="grafico-mysql"></canvas>
         </div>
 
@@ -18,11 +18,17 @@
             new Chart(mysql, {
                 type: 'bar',
                 data: {
-                    labels: ['Generar Autores', 'Insertar Autores', 'Exportar CSV', 'Respaldar MongoDB', 'Restaurar MySQL', 'Dump MySQL', 'Importar Dump', 'Libros en MongoDB'],
+                    labels: ['Generar 100,000 libros','insertar csv(100,000)','insert(3500)','generar 100 csv','insertar 100 csv','Select','Generar Autores', 'Insertar Autores', 'Exportar CSV', 'Respaldar MongoDB', 'Restaurar MySQL', 'Dump MySQL', 'Importar Dump', 'Libros en MongoDB'],
                     datasets: [{
                         label: 'Tiempos de ejecución MySQL (ms)',
-                        data: [4248, 2241, 88, 10119, 12921, 80, 241, 23563],
+                        data: [858,3,39,1015,5,6,590, 5381, 4070, 4190, 4142, 4107, 4081, 3],
                         backgroundColor: [
+                            'rgba(181, 235, 54, 0.6)',
+                            'rgba(16, 101, 158, 0.6)',
+                            'rgba(238, 167, 182, 0.6)', 
+                            'rgba(9, 247, 247, 0.6)',
+                            'rgba(251, 217, 139, 0.6)',
+                            'rgba(174, 141, 240, 0.6)',
                             'rgba(54, 162, 235, 0.6)',
                             'rgba(255, 99, 132, 0.6)', 
                             'rgba(75, 192, 192, 0.6)',
@@ -33,6 +39,12 @@
                             'rgba(94, 232, 185, 0.6)'
                         ],
                         borderColor: [
+                            'rgba(181, 235, 54, 1)',
+                            'rgb(74, 100, 118)',
+                            'rgb(154, 88, 102)',
+                            'rgb(25, 122, 122)',
+                            'rgb(123, 91, 15)',
+                            'rgb(47, 3, 135)',
                             'rgba(54, 162, 235, 1)',
                             'rgba(255, 99, 132, 1)',
                             'rgba(75, 192, 192, 1)',

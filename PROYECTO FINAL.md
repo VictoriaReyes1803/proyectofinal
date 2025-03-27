@@ -14,12 +14,9 @@ CREATE TABLE Autor (id INT, license VARCHAR(12) NOT NULL, name TINYTEXT NOT NULL
 * El Usuario 'B' puedes crear y ver datos de la tabla 'Autor', así como ver datos de la tabla 'Libros'
 * Generar un reporte de rendimiento para MySQL que mida los siguientes aspectos de la base de datos:
   - El tiempo que toma crear 100,000 Libros en la Base de Datos usando datos aleatorios en CSV
-  ------------------------------------------------------------
-
-
-
   - El tiempo que toma insertar el CSV
   - El tiempo que toma insertar masivamente, estresando la base de datos con 3,500 Libros
+  
   - El tiempo que toma generar 100 archivos CSV, donde cada archivo incluye 1000 Libros
   - El tiempo que toma insertar los 100 archivos a MySQL
   - El tiempo que toma obtener en 1 solo query: El mayor número de paginas, menor número de páginas, el promedio de número de páginas, el año más cercano a la actualidad, el año más antigüo, y el número total de libros.

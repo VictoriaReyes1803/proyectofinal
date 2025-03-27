@@ -342,7 +342,9 @@ async function ejecutarPractica() {
         VALUES ('${librosData2[i].isbn}', '${librosData2[i].title}', '${librosData2[i].autor_license}', '${librosData2[i].editorial}', ${librosData2[i].pages}, ${librosData2[i].year}, '${librosData2[i].genre}', '${librosData2[i].language}', '${librosData2[i].format}', '${librosData2[i].sinopsis}', '${librosData2[i].content}');
         `); 
         }
-   
+     insert.process.stdout.on("data", (data) => console.log("STDOUT:", data.toString()));
+    insert.process.stderr.on("data", (data) => console.error("STDERR:", data.toString()));
+    
     insert.End();
     const end3 = Date.now();
     await insert.Finish();

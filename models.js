@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS autor (
     secondLastName TINYTEXT,
     year SMALLINT NOT NULL
     );
+    
 CREATE INDEX idx_license ON autor(license);
 
 CREATE TABLE IF NOT EXISTS libro (

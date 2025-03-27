@@ -33,10 +33,14 @@ function generate_libros_data(size) {
     const isbn = random_text(16);
     const title = random_text(random_number(10, 50));
     const autor_license = random_text(12);
+    const editorial = random_text(random_number(5, 15));
     const pages = random_number(50, 1000);
     const year = random_number(1950, 2024);
+    const genre = random_text(random_number(5, 10));
+    const language = random_text(random_number(4, 8));
+    const format = random_text(random_number(3, 8));
 
-    csv += `${isbn},${title},${autor_license},${pages},${year}\n`;
+    csv += `${isbn},${title},${autor_license},${editorial},${pages},${year},${genre},${language},${format}\n`;
   }
   return csv;
 }
@@ -368,21 +372,28 @@ async function ejecutarPractica() {
   console.log(`[MySQL] Dump completado en ${metricas.mysql.dumpMySQL} ms`);
 
   console.log("7) Importando snapshot de MySQL");
-  const mysqlimport = new Process("mysql", { shell: true });
-  mysqlimport.ProcessArguments.push("-uroot");
-  mysqlimport.ProcessArguments.push("--port=6033");
-  mysqlimport.ProcessArguments.push("--password=utt");
-  mysqlimport.Execute();
-  mysqlimport.Write("DROP DATABASE IF EXISTS Biblioteca;");
-  mysqlimport.Write("CREATE DATABASE Biblioteca;");
-  mysqlimport.Write("USE Biblioteca;");
-  mysqlimport.Write("source C:/tmp/biblioteca_snapshot.sql");
-  mysqlimport.End();
-  await mysqlimport.Finish();
-  metricas.mysql.importarDump = mysqlimport.EndTime - mysqlimport.StartTime;
-  console.log(
-    `[MySQL] Importación de snapshot completada en ${metricas.mysql.importarDump} ms`
-  );
+
+  const setupDb = new Process("mysql", { shell: true });
+  setupDb.ProcessArguments.push("-uroot");
+  setupDb.ProcessArguments.push("--port=6033");
+  setupDb.ProcessArguments.push("--password=utt");
+  setupDb.Execute();
+  setupDb.Write("DROP DATABASE IF EXISTS Biblioteca;");
+  setupDb.Write("CREATE DATABASE Biblioteca;");
+  setupDb.End();
+  await setupDb.Finish();
+  const importarDump = new Process("mysql", { shell: true });
+  importarDump.ProcessArguments.push("-uroot");
+  importarDump.ProcessArguments.push("--port=6033");
+  importarDump.ProcessArguments.push("--password=utt");
+  importarDump.ProcessArguments.push("Biblioteca");
+  importarDump.ProcessArguments.push("<");
+  importarDump.ProcessArguments.push("C:/tmp/biblioteca_snapshot.sql");
+  const startImport = Date.now();
+  await importarDump.ExecuteAsync(true);
+  const endImport = Date.now();
+  metricas.mysql.importarDump = (setupDb.EndTime - setupDb.StartTime) + (endImport - startImport);
+  console.log(`[MySQL] Importación de snapshot completada en ${metricas.mysql.importarDump} ms`);
 
   console.log("8) Generando 1,000,000 libros en MongoDB");
   const librosData = generate_libros_data(1000000);
@@ -394,7 +405,7 @@ async function ejecutarPractica() {
   mongoImportLibros.ProcessArguments.push("--collection=Libros");
   mongoImportLibros.ProcessArguments.push("--type=csv");
   mongoImportLibros.ProcessArguments.push(
-    "--fields=ISBN,title,autor_license,pages,year"
+    "--fields=ISBN,title,autor_license,editorial,pages,year,genre,language,format"
   );
   mongoImportLibros.ProcessArguments.push(`--file=${archivoLibros}`);
   const startLibrosMongo = Date.now();

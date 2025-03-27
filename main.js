@@ -603,8 +603,8 @@ async function ejecutarPractica() {
                       LINES TERMINATED BY '\n'
                       IGNORE 1 ROWS;`);
                       
-                    //   restaurarMySQL.process.stdout.on("data", (data) => console.log("STDOUT:", data.toString()));
-                    //   restaurarMySQL.process.stderr.on("data", (data) => console.error("STDERR:", data.toString()));
+                      restaurarMySQL.process.stdout.on("data", (data) => console.log("STDOUT:", data.toString()));
+                      restaurarMySQL.process.stderr.on("data", (data) => console.error("STDERR:", data.toString()));
     
     restaurarMySQL.End();
     await restaurarMySQL.Finish();

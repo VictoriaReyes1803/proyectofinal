@@ -227,7 +227,7 @@ async function ejecutarPractica() {
 
   console.log("0) Creando base de datos MySQL");
   const crearBaseDatos = new Process("mysql", { shell: true });
-  crearBaseDatos.ProcessArguments.push("-uroot --port=3306 --password=tucontrasena");
+  crearBaseDatos.ProcessArguments.push("-uroot --port=6033 --password=utt");
   crearBaseDatos.Execute();
   crearBaseDatos.Write(`
         DROP DATABASE IF EXISTS Biblioteca;
@@ -260,8 +260,8 @@ async function ejecutarPractica() {
             CONSTRAINT fk_autor FOREIGN KEY (autor_license) REFERENCES autor(license) ON DELETE CASCADE ON UPDATE CASCADE
         );
 
-        CREATE USER IF NOT EXISTS 'usuarioA'@'localhost' IDENTIFIED BY 'tucontrasena';
-        CREATE USER IF NOT EXISTS 'usuarioB'@'localhost' IDENTIFIED BY 'tucontrasena';
+        CREATE USER IF NOT EXISTS 'usuarioA'@'localhost' IDENTIFIED BY 'utt';
+        CREATE USER IF NOT EXISTS 'usuarioB'@'localhost' IDENTIFIED BY 'utt';
 
         -- Permisos para usuario A
         GRANT INSERT, SELECT ON Biblioteca.libro TO 'usuarioA'@'localhost';
@@ -292,7 +292,7 @@ async function ejecutarPractica() {
     
     console.log("2) insertar el CSV");
     const loadata = new Process("mysql", { shell: true });
-    loadata.ProcessArguments.push("-uroot --port=3306 --password=tucontrasena");
+    loadata.ProcessArguments.push("-uroot --port=6033 --password=utt");
     const start2 = Date.now();
     loadata.Execute();
     loadata.Write("USE Biblioteca;");
@@ -320,7 +320,7 @@ async function ejecutarPractica() {
 
   console.log("3) insertar masivamente, estresando la base de datos con 3,500 Libros");
   const insert = new Process("mysql", { shell: true });
-    insert.ProcessArguments.push("-uroot --port=6033 --password=tucontrasena");
+    insert.ProcessArguments.push("-uroot --port=6033 --password=utt");
     insert.Execute();
     insert.Write("USE Biblioteca;");
 
@@ -365,7 +365,7 @@ async function ejecutarPractica() {
     
     console.log("5) insertar los 100 archivos a MySQL");
     const loadata2 = new Process("mysql", { shell: true });
-    loadata2.ProcessArguments.push("-uroot --port=6033 --password=tucontrasena");
+    loadata2.ProcessArguments.push("-uroot --port=6033 --password=utt");
     const start5 = Date.now();
     loadata2.Execute();
     loadata2.Write("USE Biblioteca;");
@@ -396,7 +396,7 @@ async function ejecutarPractica() {
 
   console.log("6)obtener en 1 solo query: El mayor número de paginas, menor número de páginas, el promedio de número de páginas, el año más cercano a la actualidad, el año más antigüo, y el número total de libros.");
   const script = new Process("mysql", { shell: true });
-    script.ProcessArguments.push("-uroot --port=6033 --password=tucontrasena");
+    script.ProcessArguments.push("-uroot --port=6033 --password=utt");
     const start6 = Date.now();
     script.Execute();
     script.Write("USE Biblioteca;");

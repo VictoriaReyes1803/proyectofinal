@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <title>Métricas de Rendimiento</title>
+    </head>
+    <body">
+        <h1>Resultados de Rendimiento</h1>
+        <div style="width: 80%; margin: auto;">
+            <canvas id="grafico-mysql"></canvas>
+        </div>
+
+        <script>
+            const mysql = document.getElementById('grafico-mysql');
+            
+            new Chart(mysql, {
+                type: 'bar',
+                data: {
+                    labels: ['Generar Autores', 'Insertar Autores', 'Exportar CSV', 'Respaldar MongoDB', 'Restaurar MySQL', 'Dump MySQL', 'Importar Dump', 'Libros en MongoDB'],
+                    datasets: [{
+                        label: 'Tiempos de ejecución MySQL (ms)',
+                        data: [4063, 2422, 79, 11673, 14434, 111, 131, 19017],
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.6)',
+                            'rgba(255, 99, 132, 0.6)', 
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(255, 205, 86, 0.6)',
+                            'rgba(153, 102, 255, 0.6)',
+                            'rgba(255, 159, 64, 0.6)',
+                            'rgba(201, 203, 207, 0.6)',
+                            'rgba(94, 232, 185, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 205, 86, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(201, 203, 207, 1)',
+                            'rgba(94, 232, 185, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        </script>
+    </body>
+    </html>

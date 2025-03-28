@@ -139,8 +139,8 @@ function loadata(ruta, tabla) {
 function generarReporte(metricas) {
   const grafico_mysql = {
     type: "bar",
-    labels: `['Generar 100,000 libros','insertar csv(100,000)','insert(3500)','generar 100 csv','insertar 100 csv','Select','Generar Autores', 'Insertar Autores', 'Exportar CSV', 'Respaldar MongoDB', 'Restaurar MySQL', 'Dump MySQL', 'Importar Dump', 'Libros en MongoDB']`,
-    data: `[${metricas.mysql.libros1},${metricas.mysql.csv1},${metricas.mysql.libros2},${metricas.mysql.libros3},${metricas.mysql.csv2},${metricas.mysql.script},${metricas.mysql.generarAutores}, ${metricas.mysql.insertarAutores}, ${metricas.mysql.exportarCSV}, ${metricas.mysql.respaldarMongo}, ${metricas.mysql.restaurarMySQL}, ${metricas.mysql.dumpMySQL}, ${metricas.mysql.importarDump}, ${metricas.mysql.librosEnMongo}]`,
+    labels: `['Generar 100,000 libros','insertar csv(100,000)','insert(3500)','generar 100 csv','insertar 100 csv','Select','Generar Autores', 'Insertar Autores', 'Exportar CSV', 'Respaldar MongoDB', 'Restaurar MySQL', 'Dump MySQL', 'Importar Dump', 'Libros en MongoDB', 'Fallo Usuario C (Autor)', 'Fallo Usuario C (Libro)']`,
+    data: `[${metricas.mysql.libros1},${metricas.mysql.csv1},${metricas.mysql.libros2},${metricas.mysql.libros3},${metricas.mysql.csv2},${metricas.mysql.script},${metricas.mysql.generarAutores}, ${metricas.mysql.insertarAutores}, ${metricas.mysql.exportarCSV}, ${metricas.mysql.respaldarMongo}, ${metricas.mysql.restaurarMySQL}, ${metricas.mysql.dumpMySQL}, ${metricas.mysql.importarDump}, ${metricas.mysql.librosEnMongo}, ${metricas.mysql.usuarioCFallidoAutor}, ${metricas.mysql.usuarioCFallidoLibro}]`,
     title: "Tiempos de ejecución MySQL (ms)",
   };
 
@@ -570,14 +570,34 @@ async function ejecutarPractica() {
     .map((line) => {
       const columnas = line.split(",");
       let [
-        ISBN,title,autor_license,editorial,pages,year,genre,language,format,sinopsis,content
+        ISBN,
+        title,
+        autor_license,
+        editorial,
+        pages,
+        year,
+        genre,
+        language,
+        format,
+        sinopsis,
+        content,
       ] = columnas.map((col) => col.trim());
 
       year = parseInt(year);
       if (isNaN(year)) year = 2000;
 
       return [
-        ISBN,title,autor_license,editorial,pages,year,genre,language,format,sinopsis,content
+        ISBN,
+        title,
+        autor_license,
+        editorial,
+        pages,
+        year,
+        genre,
+        language,
+        format,
+        sinopsis,
+        content,
       ].join(",");
     });
 
@@ -804,56 +824,75 @@ async function ejecutarPractica() {
     FIELDS TERMINATED BY ',' 
     LINES TERMINATED BY '\n'
     IGNORE 1 ROWS
-    (ISBN,year,pages);`);  
-    importarOldBooks.process.stdout.on("data", (data) =>
-      console.log("STDOUT:", data.toString())
-    );
-    importarOldBooks.process.stderr.on("data", (data) =>
-      console.error("STDERR:", data.toString())
-    );
+    (ISBN,year,pages);`);
+  importarOldBooks.process.stdout.on("data", (data) =>
+    console.log("STDOUT:", data.toString())
+  );
+  importarOldBooks.process.stderr.on("data", (data) =>
+    console.error("STDERR:", data.toString())
+  );
   importarOldBooks.End();
   await importarOldBooks.Finish();
 
-  console.log("11) Midiendo tiempo de fallo de usuario A para insertar Autor");
-  const usuarioAFallido = new Process("mysql", { shell: true });
-  usuarioAFallido.ProcessArguments.push("-uusuarioB");
-  usuarioAFallido.ProcessArguments.push("--port=6033");
-  usuarioAFallido.ProcessArguments.push("--password=password");
-  const startFalloA = Date.now();
-  usuarioAFallido.Execute();
-  usuarioAFallido.Write("USE Biblioteca;");
-  usuarioAFallido.Write(
+  console.log(
+    "11) Midiendo tiempo de fallo con usuario diferente (C) para insertar Autor"
+  );
+  const crearUsuarioC = new Process("mysql", { shell: true });
+  crearUsuarioC.ProcessArguments.push("-uroot");
+  crearUsuarioC.ProcessArguments.push("--port=6033");
+  crearUsuarioC.ProcessArguments.push("--password=utt");
+  crearUsuarioC.Execute();
+  crearUsuarioC.Write("USE Biblioteca;");
+  crearUsuarioC.Write(
+    "CREATE USER IF NOT EXISTS 'usuarioC'@'localhost' IDENTIFIED BY 'utt';"
+  );
+  crearUsuarioC.Write(
+    "GRANT SELECT ON Biblioteca.* TO 'usuarioC'@'localhost';"
+  );
+  crearUsuarioC.Write("FLUSH PRIVILEGES;");
+  crearUsuarioC.End();
+  await crearUsuarioC.Finish();
+
+  console.log("Midiendo tiempo de fallo de usuario C para insertar Autor");
+  const usuarioCFallidoAutor = new Process("mysql", { shell: true });
+  usuarioCFallidoAutor.ProcessArguments.push("-uusuarioC");
+  usuarioCFallidoAutor.ProcessArguments.push("--port=6033");
+  usuarioCFallidoAutor.ProcessArguments.push("--password=utt");
+  const startFalloAutor = Date.now();
+  usuarioCFallidoAutor.Execute();
+  usuarioCFallidoAutor.Write("USE Biblioteca;");
+  usuarioCFallidoAutor.Write(
     `INSERT INTO autor VALUES (NULL, 'LIC123', 'NombreFallo', 'ApellidoFallo', NULL, 2024);`
   );
-  usuarioAFallido.End();
+  usuarioCFallidoAutor.End();
   try {
-    await usuarioAFallido.Finish();
+    await usuarioCFallidoAutor.Finish();
   } catch (error) {}
-  const endFalloA = Date.now();
-  metricas.mysql.usuarioAFallido = endFalloA - startFalloA;
+  const endFalloAutor = Date.now();
+  metricas.mysql.usuarioCFallidoAutor = endFalloAutor - startFalloAutor;
   console.log(
-    `[MySQL] Tiempo de fallo de usuario A: ${metricas.mysql.usuarioAFallido} ms`
+    `[MySQL] Tiempo de fallo de usuario C para insertar Autor: ${metricas.mysql.usuarioCFallidoAutor} ms`
   );
 
-  console.log("12) Midiendo tiempo de fallo de usuario B para insertar Libro");
-  const usuarioBFallido = new Process("mysql", { shell: true });
-  usuarioBFallido.ProcessArguments.push("-uusuarioB");
-  usuarioBFallido.ProcessArguments.push("--port=6033");
-  usuarioBFallido.ProcessArguments.push("--password=password");
-  const startFalloB = Date.now();
-  usuarioBFallido.Execute();
-  usuarioBFallido.Write("USE Biblioteca;");
-  usuarioBFallido.Write(
+  console.log("12) Midiendo tiempo de fallo de usuario C para insertar Libro");
+  const usuarioCFallidoLibro = new Process("mysql", { shell: true });
+  usuarioCFallidoLibro.ProcessArguments.push("-uusuarioC");
+  usuarioCFallidoLibro.ProcessArguments.push("--port=6033");
+  usuarioCFallidoLibro.ProcessArguments.push("--password=utt");
+  const startFalloLibro = Date.now();
+  usuarioCFallidoLibro.Execute();
+  usuarioCFallidoLibro.Write("USE Biblioteca;");
+  usuarioCFallidoLibro.Write(
     `INSERT INTO libro VALUES (NULL, 'ISBN123', 'TituloFallo', 'LIC123', 'EditorialFallo', 200, 2024, 'GeneroFallo', 'EspañolFallo', 'FormatoFallo', 'SinopsisFallo', NULL);`
   );
-  usuarioBFallido.End();
+  usuarioCFallidoLibro.End();
   try {
-    await usuarioBFallido.Finish();
+    await usuarioCFallidoLibro.Finish();
   } catch (error) {}
-  const endFalloB = Date.now();
-  metricas.mysql.usuarioBFallido = endFalloB - startFalloB;
+  const endFalloLibro = Date.now();
+  metricas.mysql.usuarioCFallidoLibro = endFalloLibro - startFalloLibro;
   console.log(
-    `[MySQL] Tiempo de fallo de usuario B: ${metricas.mysql.usuarioBFallido} ms`
+    `[MySQL] Tiempo de fallo de usuario C para insertar Libro: ${metricas.mysql.usuarioCFallidoLibro} ms`
   );
 
   generarReporte(metricas);

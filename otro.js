@@ -138,8 +138,8 @@ async function ejecutarPractica() {
   console.log("0) Creando base de datos MySQL");
   const crearBaseDatos = new Process("mysql", { shell: true });
   crearBaseDatos.ProcessArguments.push("-uroot");
-  crearBaseDatos.ProcessArguments.push("--port=6033");
-  crearBaseDatos.ProcessArguments.push("--password=utt");
+  crearBaseDatos.ProcessArguments.push("--port=3306");
+  crearBaseDatos.ProcessArguments.push("--password=tucontrasena");
   crearBaseDatos.Execute();
   crearBaseDatos.Write(`
         DROP DATABASE IF EXISTS Biblioteca;
@@ -218,8 +218,8 @@ async function ejecutarPractica() {
   console.log("2) Insertando Autores en MySQL");
   const insertarAutores = new Process("mysql", { shell: true });
   insertarAutores.ProcessArguments.push("-uroot");
-  insertarAutores.ProcessArguments.push("--port=6033");
-  insertarAutores.ProcessArguments.push("--password=utt");
+  insertarAutores.ProcessArguments.push("--port=3306");
+  insertarAutores.ProcessArguments.push("--password=tucontrasena");
   insertarAutores.Execute();
   insertarAutores.Write("USE Biblioteca;");
   insertarAutores.Write(`LOAD DATA INFILE '${archivoAutores}' INTO TABLE Biblioteca.autor 
@@ -238,8 +238,8 @@ async function ejecutarPractica() {
   console.log("3) Exportando tablas a CSV");
   const exportarCSV = new Process("mysql", { shell: true });
   exportarCSV.ProcessArguments.push("-uroot");
-  exportarCSV.ProcessArguments.push("--port=6033");
-  exportarCSV.ProcessArguments.push("--password=utt");
+  exportarCSV.ProcessArguments.push("--port=3306");
+  exportarCSV.ProcessArguments.push("--password=tucontrasena");
   exportarCSV.Execute();
   exportarCSV.Write("USE Biblioteca;");
   exportarCSV.Write(
@@ -316,8 +316,8 @@ async function ejecutarPractica() {
 
   const eliminarMySQL = new Process("mysql", { shell: true });
   eliminarMySQL.ProcessArguments.push("-uroot");
-  eliminarMySQL.ProcessArguments.push("--port=6033");
-  eliminarMySQL.ProcessArguments.push("--password=utt");
+  eliminarMySQL.ProcessArguments.push("--port=3306");
+  eliminarMySQL.ProcessArguments.push("--password=tucontrasena");
   eliminarMySQL.Execute();
   eliminarMySQL.Write("USE Biblioteca;");
   eliminarMySQL.Write("DELETE FROM autor;");
@@ -375,8 +375,8 @@ async function ejecutarPractica() {
 
   const restaurarMySQL = new Process("mysql", { shell: true });
   restaurarMySQL.ProcessArguments.push("-uroot");
-  restaurarMySQL.ProcessArguments.push("--port=6033");
-  restaurarMySQL.ProcessArguments.push("--password=utt");
+  restaurarMySQL.ProcessArguments.push("--port=3306");
+  restaurarMySQL.ProcessArguments.push("--password=tucontrasena");
   restaurarMySQL.Execute();
   restaurarMySQL.Write("USE Biblioteca;");
   restaurarMySQL.Write("DROP TABLE IF EXISTS autor;");
@@ -408,8 +408,8 @@ async function ejecutarPractica() {
   console.log("6) Realizando dump de MySQL");
   const mysqldump = new Process("mysqldump");
   mysqldump.ProcessArguments.push("-uroot");
-  mysqldump.ProcessArguments.push("--port=6033");
-  mysqldump.ProcessArguments.push("--password=utt");
+  mysqldump.ProcessArguments.push("--port=3306");
+  mysqldump.ProcessArguments.push("--password=tucontrasena");
   mysqldump.ProcessArguments.push("Biblioteca");
   mysqldump.ProcessArguments.push(
     "--result-file=C:/tmp/biblioteca_snapshot.sql"
@@ -422,8 +422,8 @@ async function ejecutarPractica() {
 
   const setupDb = new Process("mysql", { shell: true });
   setupDb.ProcessArguments.push("-uroot");
-  setupDb.ProcessArguments.push("--port=6033");
-  setupDb.ProcessArguments.push("--password=utt");
+  setupDb.ProcessArguments.push("--port=3306");
+  setupDb.ProcessArguments.push("--password=tucontrasena");
   setupDb.Execute();
   setupDb.Write("DROP DATABASE IF EXISTS Biblioteca;");
   setupDb.Write("CREATE DATABASE Biblioteca;");
@@ -431,8 +431,8 @@ async function ejecutarPractica() {
   await setupDb.Finish();
   const importarDump = new Process("mysql", { shell: true });
   importarDump.ProcessArguments.push("-uroot");
-  importarDump.ProcessArguments.push("--port=6033");
-  importarDump.ProcessArguments.push("--password=utt");
+  importarDump.ProcessArguments.push("--port=3306");
+  importarDump.ProcessArguments.push("--password=tucontrasena");
   importarDump.ProcessArguments.push("Biblioteca");
   importarDump.ProcessArguments.push("<");
   importarDump.ProcessArguments.push("C:/tmp/biblioteca_snapshot.sql");
@@ -478,8 +478,8 @@ async function ejecutarPractica() {
   console.log("10) Importando CSV a nueva tabla MySQL");
   const importarOldBooks = new Process("mysql", { shell: true });
   importarOldBooks.ProcessArguments.push("-uroot");
-  importarOldBooks.ProcessArguments.push("--port=6033");
-  importarOldBooks.ProcessArguments.push("--password=utt");
+  importarOldBooks.ProcessArguments.push("--port=3306");
+  importarOldBooks.ProcessArguments.push("--password=tucontrasena");
   importarOldBooks.Execute();
   importarOldBooks.Write("USE Biblioteca;");
   importarOldBooks.Write("DROP TABLE IF EXISTS old_books;");
@@ -496,7 +496,7 @@ async function ejecutarPractica() {
   console.log("11) Midiendo tiempo de fallo de usuario A para insertar Autor");
   const usuarioAFallido = new Process("mysql", { shell: true });
   usuarioAFallido.ProcessArguments.push("-uusuarioTest");
-  usuarioAFallido.ProcessArguments.push("--port=6033");
+  usuarioAFallido.ProcessArguments.push("--port=3306");
   usuarioAFallido.ProcessArguments.push("--password=password");
   const startFalloA = Date.now();
   usuarioAFallido.Execute();
@@ -517,7 +517,7 @@ async function ejecutarPractica() {
   console.log("12) Midiendo tiempo de fallo de usuario B para insertar Libro");
   const usuarioBFallido = new Process("mysql", { shell: true });
   usuarioBFallido.ProcessArguments.push("-uusuarioTest2");
-  usuarioBFallido.ProcessArguments.push("--port=6033");
+  usuarioBFallido.ProcessArguments.push("--port=3306");
   usuarioBFallido.ProcessArguments.push("--password=password");
   const startFalloB = Date.now();
   usuarioBFallido.Execute();
